@@ -3,28 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team of Rohit Shukla-SPF</title>
+    <title>Team of Rohit Shukla-SPF Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --flipkart-blue: #2874f0;
             --flipkart-yellow: #ffe500;
             --dark-blue: #1e3a8a;
-            --bg-color: #f4f6f9;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #cbd5e1;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --accent-green: #10b981;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 24px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
         }
 
@@ -32,134 +36,208 @@
         header {
             background: linear-gradient(135deg, var(--dark-blue), var(--flipkart-blue));
             color: white;
-            padding: 25px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 12px;
             margin-bottom: 25px;
             text-align: center;
             position: relative;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.2);
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.2rem;
+            font-size: 2.4rem;
+            letter-spacing: -0.05em;
         }
 
         header p {
-            margin: 5px 0 0 0;
+            margin: 8px 0 0 0;
             opacity: 0.9;
             font-size: 1.1rem;
+            font-weight: 300;
         }
 
         .fk-badge {
             position: absolute;
-            top: 15px;
-            right: 20px;
+            top: 20px;
+            right: 25px;
             background-color: var(--flipkart-yellow);
             color: #000;
-            padding: 5px 12px;
-            font-weight: bold;
-            border-radius: 4px;
+            padding: 6px 16px;
+            font-weight: 700;
+            border-radius: 6px;
             font-size: 0.85rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
+
+        /* KPI Quick Metrics Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s ease;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .kpi-icon {
+            font-size: 2rem;
+            color: var(--flipkart-blue);
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            center; justify-content: center;
+        }
+
+        .kpi-info h3 { margin: 0; font-size: 0.9rem; color: #64748b; text-transform: uppercase; }
+        .kpi-info p { margin: 4px 0 0 0; font-size: 1.6rem; font-weight: 700; color: var(--dark-blue); }
 
         /* Controls / Interactive Filters */
         .controls-card {
             background: var(--card-bg);
-            padding: 15px 20px;
-            border-radius: 8px;
+            padding: 18px 24px;
+            border-radius: 10px;
             margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 24px;
             align-items: center;
         }
 
         .filter-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .filter-group label {
             font-weight: 600;
             color: var(--dark-blue);
+            font-size: 0.95rem;
         }
 
         .filter-group select {
-            padding: 8px 14px;
-            border-radius: 6px;
+            padding: 10px 16px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             background-color: #fff;
             font-size: 0.95rem;
+            font-weight: 500;
+            color: #334155;
             cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        /* Grid Layout */
-        .grid {
+        .filter-group select:focus {
+            border-color: var(--flipkart-blue);
+        }
+
+        /* Dashboard Breakdown Layout */
+        .grid-split {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 3fr 2fr;
             gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-split { grid-template-columns: 1fr; }
         }
 
         .card {
             background: var(--card-bg);
-            padding: 22px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            border: 1px solid #e2e8f0;
-            overflow-x: auto;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
         }
 
         .card h2 {
             color: var(--dark-blue);
             margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 8px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        /* Tables Formatting */
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            margin-top: 10px;
         }
 
         th {
-            background-color: #f1f5f9;
-            color: var(--dark-blue);
-            padding: 12px;
+            background-color: #f8fafc;
+            color: #475569;
+            padding: 14px 16px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             border-bottom: 2px solid var(--border-color);
         }
 
         td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
             font-size: 0.95rem;
         }
 
-        tr:hover td {
-            background-color: #f8fafc;
-        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: #f1f5f9; }
 
-        /* Grade Badge Styling */
+        /* Badges Graphic Engine */
         .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        .badge-aplus { background-color: #dcfce7; color: #15803d; }
-        .badge-a { background-color: #e0f2fe; color: #0369a1; }
-        .badge-b { background-color: #fef9c3; color: #a16207; }
-        .badge-other { background-color: #f3f4f6; color: #4b5563; }
+        .badge-aplus { background-color: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-a { background-color: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+        .badge-b { background-color: #fef9c3; color: #ca8a04; border: 1px solid #fef08a; }
+        .badge-other { background-color: #f1f5f9; color: #475569; }
+
+        /* Chart Area Control */
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 240px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -167,13 +245,37 @@
     <div class="container">
         <header>
             <h1>Team of Rohit Shukla-SPF</h1>
-            <p>Operations Performance & Leadership Dashboard</p>
-            <div class="fk-badge">Flipkart SPF</div>
+            <p>Operations Performance & Leadership Analytics Suite</p>
+            <div class="fk-badge"><i class="fa-solid fa-bolt"></i> Flipkart SPF</div>
         </header>
+
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="kpi-info">
+                    <h3>Total Headcount</h3>
+                    <p id="kpi-count">14</p>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="color: var(--accent-green); background: #ecfdf5;"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="kpi-info">
+                    <h3>Active Agents</h3>
+                    <p>14</p>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon" style="color: #ea580c; background: #fff7ed;"><i class="fa-solid fa-trophy"></i></div>
+                <div class="kpi-info">
+                    <h3>Grade A+ Rankers</h3>
+                    <p id="kpi-aplus">12</p>
+                </div>
+            </div>
+        </div>
 
         <div class="controls-card">
             <div class="filter-group">
-                <label for="tl-filter">Filter by Team Leader (TL):</label>
+                <label for="tl-filter"><i class="fa-solid fa-filter"></i> Team Leader Filter:</label>
                 <select id="tl-filter" onchange="applyFilters()">
                     <option value="all">All TLs (Samreena & Tanya)</option>
                     <option value="Samreena Khan">Samreena Khan</option>
@@ -181,7 +283,7 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label for="grade-filter">Filter by Grade:</label>
+                <label for="grade-filter"><i class="fa-solid fa-ranking-star"></i> Performance Grade:</label>
                 <select id="grade-filter" onchange="applyFilters()">
                     <option value="all">All Grades</option>
                     <option value="A+">Grade A+</option>
@@ -190,23 +292,28 @@
             </div>
         </div>
 
-        <div class="grid">
+        <div class="grid-split">
             <div class="card">
-                <h2>📊 Team Leader (TL) Performance Summary</h2>
-                <div id="tl-summary-wrapper">
-                    </div>
+                <h2><i class="fa-solid fa-chart-line"></i> Team Leader (TL) Overview Summary</h2>
+                <div class="table-responsive" id="tl-summary-wrapper"></div>
             </div>
+            
+            <div class="card">
+                <h2><i class="fa-solid fa-pie-chart"></i> Target Achievement Analytics</h2>
+                <div class="chart-container">
+                    <canvas id="tlPerformanceChart"></canvas>
+                </div>
+            </div>
+        </div>
 
-            <div class="card">
-                <h2>👥 Detailed Agent Performance Breakdown</h2>
-                <div id="agent-table-wrapper">
-                    </div>
-            </div>
+        <div class="card">
+            <h2><i class="fa-solid fa-id-badge"></i> Detailed Agent Individual Performance Metrics</h2>
+            <div class="table-responsive" id="agent-table-wrapper"></div>
         </div>
     </div>
 
     <script>
-        // Directly injecting the raw data provided in your sheet for local operation
+        // Data Repository Injection Array
         const rawDataset = [
             {"LOB":"SPF","Location":"Lucknow","Sap ID":"80475251","Full Name":"Amar Saini","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"22","Exernal Compliance":"0%","Achieved Target - Att":"26%","Handle count":"104%","External Compliance_2":"40%","Achieved target":"170.85%","Grade":"A+"},
             {"LOB":"SPF","Location":"Lucknow","Sap ID":"80500690","Full Name":"Tanzeem Fatima","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"22","Exernal Compliance":"0%","Achieved Target - Att":"26%","Handle count":"77%","External Compliance_2":"40%","Achieved target":"143.55%","Grade":"A+"},
@@ -224,6 +331,8 @@
             {"LOB":"SPF","Location":"Lucknow","Sap ID":"80541200","Full Name":"Inzamam Ahmad","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"28%","External Compliance_2":"40%","Achieved target":"95.40%","Grade":"A"}
         ];
 
+        let performanceChartInstance = null;
+
         function getGradeClass(grade) {
             if (grade === 'A+') return 'badge-aplus';
             if (grade === 'A') return 'badge-a';
@@ -234,6 +343,8 @@
         function calculateTLPerformance() {
             const tls = ["Samreena Khan", "Tanya Verma"];
             let tlSummaryData = [];
+            let labels = [];
+            let targets = [];
 
             tls.forEach(tlName => {
                 const team = rawDataset.filter(agent => agent.TL === tlName);
@@ -256,29 +367,77 @@
                     "TL Name": tlName,
                     "Total Headcount": team.length,
                     "Average Attendance (Days)": avgAttendance,
-                    "Average Target Achieved": avgTarget + "%",
+                    "Average Target Achieved": avgTarget,
                     "A+ Agents Count": aPlusCount
                 });
+
+                labels.push(tlName.split(" ")[0]); // Use first name for chart clean visual look
+                targets.push(avgTarget);
             });
 
-            // Render TL Table
-            let html = '<table><thead><tr><th>TL Name</th><th>Total Headcount</th><th>Avg Attendance (Days)</th><th>Avg Target Achieved</th><th>A+ Agents Count</th></tr></thead><tbody>';
+            // Render modern HTML Data table
+            let html = '<table><thead><tr><th>TL Name</th><th>Headcount</th><th>Avg Attendance</th><th>Avg Target Achieved</th><th>A+ Performers</th></tr></thead><tbody>';
             tlSummaryData.forEach(row => {
                 html += `<tr>
                     <td><strong>${row["TL Name"]}</strong></td>
                     <td>${row["Total Headcount"]}</td>
-                    <td>${row["Average Attendance (Days)"]}</td>
-                    <td>${row["Average Target Achieved"]}</td>
-                    <td><span class="badge badge-aplus">${row["A+ Agents Count"]}</span></td>
+                    <td>${row["Average Attendance (Days)"]} Days</td>
+                    <td><strong>${row["Average Target Achieved"]}%</strong></td>
+                    <td><span class="badge badge-aplus">${row["A+ Agents Count"]} Agents</span></td>
                 </tr>`;
             });
             html += '</tbody></table>';
             document.getElementById('tl-summary-wrapper').innerHTML = html;
+
+            // Generate Chart Component
+            renderPerformanceChart(labels, targets);
+        }
+
+        function renderPerformanceChart(labels, targets) {
+            const ctx = document.getElementById('tlPerformanceChart').getContext('2d');
+            
+            if (performanceChartInstance) {
+                performanceChartInstance.destroy();
+            }
+
+            performanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Avg Target Achieved (%)',
+                        data: targets,
+                        backgroundColor: ['rgba(40, 116, 240, 0.85)', 'rgba(30, 58, 138, 0.85)'],
+                        borderColor: ['#2874f0', '#1e3a8a'],
+                        borderWidth: 1.5,
+                        borderRadius: 6,
+                        barThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 200,
+                            ticks: { callback: value => value + '%' }
+                        }
+                    }
+                }
+            });
         }
 
         function renderAgentTable(data) {
+            // Live update top KPIs summary based on selected filters
+            document.getElementById('kpi-count').innerText = data.length;
+            document.getElementById('kpi-aplus').innerText = data.filter(a => a.Grade === 'A+').length;
+
             if(data.length === 0) {
-                document.getElementById('agent-table-wrapper').innerHTML = "<p style='padding:15px; color:#64748b;'>No agent data matches these filter targets.</p>";
+                document.getElementById('agent-table-wrapper').innerHTML = "<p style='padding:20px; color:#64748b; text-align:center;'>No matching agent data available with selected criteria filters.</p>";
                 return;
             }
 
@@ -287,23 +446,23 @@
                     <tr>
                         <th>Sap ID</th>
                         <th>Agent Name</th>
-                        <th>TL</th>
+                        <th>Team Leader</th>
                         <th>Attendance</th>
                         <th>Handle Count</th>
                         <th>Achieved Target</th>
-                        <th>Grade</th>
+                        <th>Grade Rank</th>
                     </tr>
                 </thead>
                 <tbody>`;
 
             data.forEach(row => {
                 html += `<tr>
-                    <td>${row["Sap ID"]}</td>
+                    <td><span style="color:#64748b; font-family:monospace;">${row["Sap ID"]}</span></td>
                     <td><strong>${row["Full Name"]}</strong></td>
-                    <td>${row["TL"]}</td>
-                    <td>${row["Attendance"]} days</td>
+                    <td><i class="fa-solid fa-user-tie" style="color:#94a3b8; font-size:0.85rem;"></i> ${row["TL"]}</td>
+                    <td>${row["Attendance"]} Days</td>
                     <td>${row["Handle count"]}</td>
-                    <td>${row["Achieved target"]}</td>
+                    <td><strong>${row["Achieved target"]}</strong></td>
                     <td><span class="badge ${getGradeClass(row["Grade"])}">${row["Grade"]}</span></td>
                 </tr>`;
             });
@@ -329,7 +488,7 @@
             renderAgentTable(filteredData);
         }
 
-        // Kickoff setup on run
+        // Initialize setup on complete window load
         window.onload = function() {
             calculateTLPerformance();
             renderAgentTable(rawDataset);
