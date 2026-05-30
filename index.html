@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team of Rohit Shukla-SPF</title>
+    <style>
+        :root {
+            --flipkart-blue: #2874f0;
+            --flipkart-yellow: #ffe500;
+            --dark-blue: #1e3a8a;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Style */
+        header {
+            background: linear-gradient(135deg, var(--dark-blue), var(--flipkart-blue));
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .fk-badge {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: var(--flipkart-yellow);
+            color: #000;
+            padding: 5px 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Controls / Interactive Filters */
+        .controls-card {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .filter-group select {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: #fff;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .card h2 {
+            color: var(--dark-blue);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--dark-blue);
+            padding: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Grade Badge Styling */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        .badge-aplus { background-color: #dcfce7; color: #15803d; }
+        .badge-a { background-color: #e0f2fe; color: #0369a1; }
+        .badge-b { background-color: #fef9c3; color: #a16207; }
+        .badge-other { background-color: #f3f4f6; color: #4b5563; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Team of Rohit Shukla-SPF</h1>
+            <p>Operations Performance & Leadership Dashboard</p>
+            <div class="fk-badge">Flipkart SPF</div>
+        </header>
+
+        <div class="controls-card">
+            <div class="filter-group">
+                <label for="tl-filter">Filter by Team Leader (TL):</label>
+                <select id="tl-filter" onchange="applyFilters()">
+                    <option value="all">All TLs (Samreena & Tanya)</option>
+                    <option value="Samreena Khan">Samreena Khan</option>
+                    <option value="Tanya Verma">Tanya Verma</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="grade-filter">Filter by Grade:</label>
+                <select id="grade-filter" onchange="applyFilters()">
+                    <option value="all">All Grades</option>
+                    <option value="A+">Grade A+</option>
+                    <option value="A">Grade A</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>📊 Team Leader (TL) Performance Summary</h2>
+                <div id="tl-summary-wrapper">
+                    </div>
+            </div>
+
+            <div class="card">
+                <h2>👥 Detailed Agent Performance Breakdown</h2>
+                <div id="agent-table-wrapper">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Directly injecting the raw data provided in your sheet for local operation
+        const rawDataset = [
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80475251","Full Name":"Amar Saini","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"22","Exernal Compliance":"0%","Achieved Target - Att":"26%","Handle count":"104%","External Compliance_2":"40%","Achieved target":"170.85%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80500690","Full Name":"Tanzeem Fatima","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"22","Exernal Compliance":"0%","Achieved Target - Att":"26%","Handle count":"77%","External Compliance_2":"40%","Achieved target":"143.55%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80530776","Full Name":"Aman Chauhan","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"24","Exernal Compliance":"0%","Achieved Target - Att":"29%","Handle count":"60%","External Compliance_2":"40%","Achieved target":"128.63%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"81021105","Full Name":"Divya Kashyap","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"26","Exernal Compliance":"0%","Achieved Target - Att":"31%","Handle count":"46%","External Compliance_2":"40%","Achieved target":"117.22%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"81098215","Full Name":"Salman Khan","TL":"Tanya Verma","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"46%","External Compliance_2":"40%","Achieved target":"115.85%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"81065829","Full Name":"PRIYANKA PRAJAPATI","TL":"Tanya Verma","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"46%","External Compliance_2":"40%","Achieved target":"115.67%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80537591","Full Name":"Nancy Sahu","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"35%","External Compliance_2":"40%","Achieved target":"105.17%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80522247","Full Name":"Vikrant Kumar","TL":"Tanya Verma","AM":"Rohit","Status":"Active","Attendance":"20","Exernal Compliance":"0%","Achieved Target - Att":"24%","Handle count":"40%","External Compliance_2":"40%","Achieved target":"104.23%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80549402","Full Name":"Aditi Singh","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"24","Exernal Compliance":"0%","Achieved Target - Att":"29%","Handle count":"35%","External Compliance_2":"40%","Achieved target":"103.81%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80520409","Full Name":"Vijay Chauhan","TL":"Tanya Verma","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"33%","External Compliance_2":"40%","Achieved target":"102.58%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80539686","Full Name":"Iqra Rais","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"26","Exernal Compliance":"0%","Achieved Target - Att":"31%","Handle count":"31%","External Compliance_2":"40%","Achieved target":"101.95%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80538950","Full Name":"Rati Talreja","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"31%","External Compliance_2":"40%","Achieved target":"100.60%","Grade":"A+"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80541191","Full Name":"Rishikesh Srivastava","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"28%","External Compliance_2":"40%","Achieved target":"97.63%","Grade":"A"},
+            {"LOB":"SPF","Location":"Lucknow","Sap ID":"80541200","Full Name":"Inzamam Ahmad","TL":"Samreena Khan","AM":"Rohit","Status":"Active","Attendance":"25","Exernal Compliance":"0%","Achieved Target - Att":"30%","Handle count":"28%","External Compliance_2":"40%","Achieved target":"95.40%","Grade":"A"}
+        ];
+
+        function getGradeClass(grade) {
+            if (grade === 'A+') return 'badge-aplus';
+            if (grade === 'A') return 'badge-a';
+            if (grade === 'B') return 'badge-b';
+            return 'badge-other';
+        }
+
+        function calculateTLPerformance() {
+            const tls = ["Samreena Khan", "Tanya Verma"];
+            let tlSummaryData = [];
+
+            tls.forEach(tlName => {
+                const team = rawDataset.filter(agent => agent.TL === tlName);
+                if(team.length === 0) return;
+
+                let totalTarget = 0;
+                let totalAttendance = 0;
+                let aPlusCount = 0;
+
+                team.forEach(agent => {
+                    totalTarget += parseFloat(agent["Achieved target"]);
+                    totalAttendance += parseFloat(agent.Attendance);
+                    if(agent.Grade === 'A+') aPlusCount++;
+                });
+
+                let avgTarget = (totalTarget / team.length).toFixed(2);
+                let avgAttendance = (totalAttendance / team.length).toFixed(1);
+
+                tlSummaryData.push({
+                    "TL Name": tlName,
+                    "Total Headcount": team.length,
+                    "Average Attendance (Days)": avgAttendance,
+                    "Average Target Achieved": avgTarget + "%",
+                    "A+ Agents Count": aPlusCount
+                });
+            });
+
+            // Render TL Table
+            let html = '<table><thead><tr><th>TL Name</th><th>Total Headcount</th><th>Avg Attendance (Days)</th><th>Avg Target Achieved</th><th>A+ Agents Count</th></tr></thead><tbody>';
+            tlSummaryData.forEach(row => {
+                html += `<tr>
+                    <td><strong>${row["TL Name"]}</strong></td>
+                    <td>${row["Total Headcount"]}</td>
+                    <td>${row["Average Attendance (Days)"]}</td>
+                    <td>${row["Average Target Achieved"]}</td>
+                    <td><span class="badge badge-aplus">${row["A+ Agents Count"]}</span></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('tl-summary-wrapper').innerHTML = html;
+        }
+
+        function renderAgentTable(data) {
+            if(data.length === 0) {
+                document.getElementById('agent-table-wrapper').innerHTML = "<p style='padding:15px; color:#64748b;'>No agent data matches these filter targets.</p>";
+                return;
+            }
+
+            let html = `<table>
+                <thead>
+                    <tr>
+                        <th>Sap ID</th>
+                        <th>Agent Name</th>
+                        <th>TL</th>
+                        <th>Attendance</th>
+                        <th>Handle Count</th>
+                        <th>Achieved Target</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            data.forEach(row => {
+                html += `<tr>
+                    <td>${row["Sap ID"]}</td>
+                    <td><strong>${row["Full Name"]}</strong></td>
+                    <td>${row["TL"]}</td>
+                    <td>${row["Attendance"]} days</td>
+                    <td>${row["Handle count"]}</td>
+                    <td>${row["Achieved target"]}</td>
+                    <td><span class="badge ${getGradeClass(row["Grade"])}">${row["Grade"]}</span></td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('agent-table-wrapper').innerHTML = html;
+        }
+
+        function applyFilters() {
+            const tlValue = document.getElementById('tl-filter').value;
+            const gradeValue = document.getElementById('grade-filter').value;
+
+            let filteredData = rawDataset;
+
+            if(tlValue !== 'all') {
+                filteredData = filteredData.filter(item => item.TL === tlValue);
+            }
+
+            if(gradeValue !== 'all') {
+                filteredData = filteredData.filter(item => item.Grade === gradeValue);
+            }
+
+            renderAgentTable(filteredData);
+        }
+
+        // Kickoff setup on run
+        window.onload = function() {
+            calculateTLPerformance();
+            renderAgentTable(rawDataset);
+        };
+    </script>
+</body>
+</html>
