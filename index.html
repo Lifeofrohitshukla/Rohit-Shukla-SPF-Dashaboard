@@ -3,1583 +3,813 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team of Rohit Shukla-SPF Dashboard</title>
+    <title>Team of Rohit Shukla – SPF Dashboard | Startek</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         :root {
+            --startek-red:   #d7263d;
+            --startek-dark:  #1a1a2e;
+            --startek-mid:   #16213e;
+            --startek-blue:  #0f3460;
             --flipkart-blue: #2874f0;
             --flipkart-yellow: #ffe500;
-            --dark-blue: #1e3a8a;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --border-color: #e2e8f0;
-            --accent-green: #10b981;
+            --accent-green:  #10b981;
+            --accent-amber:  #f59e0b;
+            --bg:            #f0f2f7;
+            --card:          #ffffff;
+            --border:        #e2e8f0;
+            --text:          #1e293b;
+            --muted:         #64748b;
         }
-
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             margin: 0;
-            padding: 24px;
+            padding: 0;
         }
 
-        .container {
-            max-width: 1440px;
-            margin: 0 auto;
-        }
-
-        /* Header Style */
-        header {
-            background: linear-gradient(135deg, var(--dark-blue), var(--flipkart-blue));
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.2);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.4rem;
-            letter-spacing: -0.05em;
-        }
-
-        header p {
-            margin: 8px 0 0 0;
-            opacity: 0.9;
-            font-size: 1.1rem;
-            font-weight: 300;
-        }
-
-        .fk-badge {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            background-color: var(--flipkart-yellow);
-            color: #000;
-            padding: 6px 16px;
-            font-weight: 700;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-
-        /* KPI Quick Metrics Row */
-        .kpi-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .kpi-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
+        /* ── TOP NAV BAR ── */
+        .top-bar {
+            background: var(--startek-dark);
+            padding: 0 32px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            transition: transform 0.2s ease;
+            justify-content: space-between;
+            height: 52px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
-        
-        .kpi-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .kpi-icon {
-            font-size: 2rem;
-            color: var(--flipkart-blue);
-            background: #eff6ff;
-            padding: 12px;
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            center; justify-content: center;
-        }
-
-        .kpi-info h3 { margin: 0; font-size: 0.9rem; color: #64748b; text-transform: uppercase; }
-        .kpi-info p { margin: 4px 0 0 0; font-size: 1.6rem; font-weight: 700; color: var(--dark-blue); }
-
-        /* Controls / Interactive Filters */
-        .controls-card {
-            background: var(--card-bg);
-            padding: 18px 24px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            align-items: center;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .filter-group label {
-            font-weight: 600;
-            color: var(--dark-blue);
-            font-size: 0.95rem;
-        }
-
-        .filter-group select {
-            padding: 10px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: #fff;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #334155;
-            cursor: pointer;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .filter-group select:focus {
-            border-color: var(--flipkart-blue);
-        }
-
-        /* Dashboard Breakdown Layout */
-        .grid-split {
-            display: grid;
-            grid-template-columns: 3fr 2fr;
-            gap: 25px;
-            margin-bottom: 25px;
-        }
-
-        @media (max-width: 1024px) {
-            .grid-split { grid-template-columns: 1fr; }
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .card h2 {
-            color: var(--dark-blue);
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+        .top-bar-left { display: flex; align-items: center; gap: 14px; }
+        .startek-logo {
             display: flex;
             align-items: center;
             gap: 10px;
+            text-decoration: none;
         }
-
-        .table-responsive {
-            overflow-x: auto;
-            width: 100%;
+        .logo-mark {
+            width: 34px; height: 34px;
+            background: var(--startek-red);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 16px; color: white;
+            letter-spacing: -1px;
         }
-
-        /* Tables Formatting */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f8fafc;
-            color: #475569;
-            padding: 14px 16px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 0.95rem;
-        }
-
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background-color: #f1f5f9; }
-
-        /* Badges Graphic Engine */
-        .badge {
-            padding: 6px 12px;
+        .logo-text { color: white; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.02em; }
+        .logo-text span { color: var(--startek-red); }
+        .nav-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.15); }
+        .nav-breadcrumb { color: rgba(255,255,255,0.55); font-size: 0.82rem; }
+        .top-bar-right { display: flex; align-items: center; gap: 10px; }
+        .nav-pill {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.8);
+            padding: 5px 12px;
             border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
         }
-        .badge-aplus { background-color: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
-        .badge-a { background-color: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
-        .badge-b { background-color: #fef9c3; color: #ca8a04; border: 1px solid #fef08a; }
-        .badge-other { background-color: #f1f5f9; color: #475569; }
+        .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-green); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-        /* Chart Area Control */
-        .chart-container {
+        /* ── HERO HEADER ── */
+        .hero {
+            background: linear-gradient(135deg, var(--startek-dark) 0%, var(--startek-blue) 60%, #1a4a8a 100%);
+            padding: 36px 32px 32px;
             position: relative;
-            margin: auto;
-            height: 240px;
-            width: 100%;
+            overflow: hidden;
         }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'%3E%3Cpath d='M0 30h60M30 0v60'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(215,38,61,0.18) 0%, transparent 70%);
+        }
+        .hero-inner {
+            position: relative; z-index: 1;
+            max-width: 1440px; margin: 0 auto;
+            display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+        }
+        .hero-title { color: white; font-size: 2rem; font-weight: 700; margin: 0; letter-spacing: -0.03em; }
+        .hero-title span { color: #ffd166; }
+        .hero-sub { color: rgba(255,255,255,0.65); font-size: 0.9rem; margin: 6px 0 0; font-weight: 400; }
+        .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+        .hero-badge {
+            padding: 6px 14px; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 600;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .hb-fk { background: var(--flipkart-yellow); color: #000; }
+        .hb-st { background: rgba(215,38,61,0.25); color: #ff9aa8; border: 1px solid rgba(215,38,61,0.4); }
+        .hb-loc { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); }
+
+        /* ── LAYOUT ── */
+        .page-body { max-width: 1440px; margin: 0 auto; padding: 28px 32px 40px; }
+
+        /* ── KPI CARDS ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 20px 22px;
+            display: flex; align-items: center; gap: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .kpi-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .kpi-icon {
+            width: 46px; height: 46px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.35rem; flex-shrink: 0;
+        }
+        .kpi-label { font-size: 0.78rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+        .kpi-val { font-size: 1.85rem; font-weight: 700; color: var(--startek-blue); margin: 4px 0 0; line-height: 1; }
+        .kpi-delta { font-size: 0.75rem; color: var(--accent-green); margin-top: 4px; }
+
+        /* ── CONTROLS BAR ── */
+        .controls-bar {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .filter-group { display: flex; align-items: center; gap: 8px; }
+        .filter-group label { font-size: 0.85rem; font-weight: 600; color: var(--startek-blue); white-space: nowrap; }
+        .filter-group select {
+            padding: 8px 14px; border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #f8fafc; font-size: 0.88rem;
+            font-weight: 500; color: var(--text);
+            cursor: pointer; outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .filter-group select:focus { border-color: var(--startek-red); }
+        .controls-spacer { flex: 1; }
+
+        /* Export buttons */
+        .export-group { display: flex; gap: 8px; align-items: center; }
+        .export-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .btn-export {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: 8px;
+            font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; border: none;
+            transition: opacity 0.2s, transform 0.15s;
+            font-family: inherit;
+        }
+        .btn-export:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-export:active { transform: scale(0.97); }
+        .btn-csv { background: var(--accent-green); color: white; }
+        .btn-excel { background: #1d6f42; color: white; }
+        .btn-pdf { background: var(--startek-red); color: white; }
+        .btn-copy { background: var(--startek-blue); color: white; }
+
+        /* ── MAIN GRID ── */
+        .grid-split {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 1100px) { .grid-split { grid-template-columns: 1fr; } }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 18px 22px 14px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .card-title {
+            font-size: 1rem; font-weight: 700; color: var(--startek-blue);
+            display: flex; align-items: center; gap: 8px; margin: 0;
+        }
+        .card-title i { color: var(--startek-red); font-size: 1rem; }
+        .card-body { padding: 16px 22px 20px; }
+
+        /* ── TABLES ── */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        thead th {
+            background: #f8fafc;
+            color: var(--muted); font-size: 0.75rem;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 11px 14px;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+        tbody td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: #f8fafc; }
+
+        /* ── BADGES ── */
+        .badge {
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .b-aplus  { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .b-a      { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .b-b      { background: #fef9c3; color: #92400e; border: 1px solid #fde68a; }
+        .b-c      { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+        .b-d      { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        /* ── CHART ── */
+        .chart-wrap { position: relative; height: 260px; }
+
+        /* ── SEARCH ── */
+        .search-input {
+            padding: 7px 12px 7px 34px;
+            border: 1px solid var(--border);
+            border-radius: 8px; font-size: 0.85rem;
+            background: #f8fafc; outline: none;
+            font-family: inherit; color: var(--text);
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: var(--startek-red); background: white; }
+        .search-wrap { position: relative; }
+        .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.85rem; pointer-events: none; }
+
+        /* ── GRADE DISTRIBUTION ── */
+        .grade-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+        .grade-pill {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 12px; border-radius: 8px;
+            font-size: 0.8rem; font-weight: 600; cursor: pointer;
+            border: 1.5px solid transparent; transition: all 0.15s;
+        }
+        .grade-pill.active { border-color: currentColor; background: white; }
+        .gp-aplus { color: #15803d; background: #f0fdf4; }
+        .gp-a     { color: #1d4ed8; background: #eff6ff; }
+        .gp-b     { color: #92400e; background: #fffbeb; }
+        .gp-c     { color: #c2410c; background: #fff7ed; }
+        .gp-d     { color: #b91c1c; background: #fef2f2; }
+
+        /* ── PROGRESS BARS (TL table) ── */
+        .prog-wrap { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+        .prog-bar { flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+        .prog-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: var(--startek-dark);
+            color: rgba(255,255,255,0.45);
+            text-align: center;
+            font-size: 0.78rem;
+            padding: 16px 32px;
+            margin-top: 0;
+        }
+        .footer span { color: var(--startek-red); }
+
+        /* ── STARTEK WATERMARK ── */
+        .wm {
+            position: fixed; bottom: 20px; right: 24px; z-index: 99;
+            background: var(--startek-dark);
+            color: white; font-size: 0.7rem; font-weight: 600;
+            padding: 6px 12px; border-radius: 20px;
+            display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            letter-spacing: 0.05em;
+        }
+        .wm-dot { width: 6px; height: 6px; background: var(--startek-red); border-radius: 50%; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 70px; right: 24px; z-index: 200;
+            background: var(--startek-dark); color: white;
+            padding: 10px 18px; border-radius: 8px; font-size: 0.82rem;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast i { color: var(--accent-green); }
+
+        /* ── ROW RANK COLOR ── */
+        .rank-top td { background: #f0fdf4 !important; }
+        .rank-mid td { background: #fffbeb !important; }
+        .rank-low td { background: #fef2f2 !important; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Team of Rohit Shukla-SPF</h1>
-            <p>Operations Performance & Leadership Analytics Suite</p>
-            <div class="fk-badge"><i class="fa-solid fa-bolt"></i> Flipkart SPF</div>
-        </header>
+<!-- TOP NAV -->
+<nav class="top-bar">
+    <div class="top-bar-left">
+        <a class="startek-logo" href="#">
+            <div class="logo-mark">S★</div>
+            <span class="logo-text">Star<span>tek</span></span>
+        </a>
+        <div class="nav-divider"></div>
+        <span class="nav-breadcrumb">SPF Operations · Lucknow</span>
+    </div>
+    <div class="top-bar-right">
+        <div class="nav-pill"><div class="nav-dot"></div> Live Data</div>
+        <div class="nav-pill"><i class="fa-solid fa-user" style="font-size:0.7rem"></i> Rohit Shukla</div>
+    </div>
+</nav>
 
-        <div class="kpi-row">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
-                <div class="kpi-info">
-                    <h3>Total Headcount</h3>
-                    <p id="kpi-count">14</p>
-                </div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-icon" style="color: var(--accent-green); background: #ecfdf5;"><i class="fa-solid fa-circle-check"></i></div>
-                <div class="kpi-info">
-                    <h3>Active Agents</h3>
-                    <p>14</p>
-                </div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-icon" style="color: #ea580c; background: #fff7ed;"><i class="fa-solid fa-trophy"></i></div>
-                <div class="kpi-info">
-                    <h3>Grade A+ Rankers</h3>
-                    <p id="kpi-aplus">12</p>
-                </div>
+<!-- HERO HEADER -->
+<div class="hero">
+    <div class="hero-inner">
+        <div>
+            <h1 class="hero-title">Team of <span>Rohit Shukla</span></h1>
+            <p class="hero-sub">SPF · Operations Performance &amp; Leadership Analytics Suite</p>
+        </div>
+        <div class="hero-badges">
+            <span class="hero-badge hb-fk"><i class="fa-solid fa-bolt"></i> Flipkart SPF</span>
+            <span class="hero-badge hb-st"><i class="fa-solid fa-star"></i> Startek Powered</span>
+            <span class="hero-badge hb-loc"><i class="fa-solid fa-location-dot"></i> Lucknow</span>
+        </div>
+    </div>
+</div>
+
+<div class="page-body">
+
+    <!-- KPI ROW -->
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background:#eff6ff; color:var(--startek-blue)"><i class="fa-solid fa-users"></i></div>
+            <div>
+                <p class="kpi-label">Total Headcount</p>
+                <p class="kpi-val" id="kpi-count">–</p>
+                <p class="kpi-delta" id="kpi-count-sub"></p>
             </div>
         </div>
-
-        <div class="controls-card">
-            <div class="filter-group">
-                <label for="tl-filter"><i class="fa-solid fa-filter"></i> Team Leader Filter:</label>
-                <select id="tl-filter" onchange="applyFilters()">
-                    <option value="all">All TLs (Samreena & Tanya)</option>
-                    <option value="Samreena Khan">Samreena Khan</option>
-                    <option value="Tanya Verma">Tanya Verma</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="grade-filter"><i class="fa-solid fa-ranking-star"></i> Performance Grade:</label>
-                <select id="grade-filter" onchange="applyFilters()">
-                    <option value="all">All Grades</option>
-                    <option value="A+">Grade A+</option>
-                    <option value="A">Grade A</option>
-                </select>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background:#ecfdf5; color:var(--accent-green)"><i class="fa-solid fa-circle-check"></i></div>
+            <div>
+                <p class="kpi-label">Active Agents</p>
+                <p class="kpi-val" id="kpi-active">–</p>
             </div>
         </div>
-
-        <div class="grid-split">
-            <div class="card">
-                <h2><i class="fa-solid fa-chart-line"></i> Team Leader (TL) Overview Summary</h2>
-                <div class="table-responsive" id="tl-summary-wrapper"></div>
-            </div>
-            
-            <div class="card">
-                <h2><i class="fa-solid fa-pie-chart"></i> Target Achievement Analytics</h2>
-                <div class="chart-container">
-                    <canvas id="tlPerformanceChart"></canvas>
-                </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background:#fef3c7; color:#d97706"><i class="fa-solid fa-trophy"></i></div>
+            <div>
+                <p class="kpi-label">Grade A+ Rankers</p>
+                <p class="kpi-val" id="kpi-aplus">–</p>
             </div>
         </div>
-
-        <div class="card">
-            <h2><i class="fa-solid fa-id-badge"></i> Detailed Agent Individual Performance Metrics</h2>
-            <div class="table-responsive" id="agent-table-wrapper"></div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background:#fef2f2; color:var(--startek-red)"><i class="fa-solid fa-chart-line"></i></div>
+            <div>
+                <p class="kpi-label">Avg Target Achieved</p>
+                <p class="kpi-val" id="kpi-avg">–</p>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background:#f0fdf4; color:#15803d"><i class="fa-solid fa-calendar-check"></i></div>
+            <div>
+                <p class="kpi-label">Avg Attendance</p>
+                <p class="kpi-val" id="kpi-att">–</p>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Data Repository Injection Array
-        const rawDataset = [
+    <!-- CONTROLS & EXPORT BAR -->
+    <div class="controls-bar">
+        <div class="filter-group">
+            <label><i class="fa-solid fa-filter" style="color:var(--startek-red)"></i> TL:</label>
+            <select id="tl-filter" onchange="applyFilters()">
+                <option value="all">All Team Leaders</option>
+                <option value="Samreena Khan">Samreena Khan</option>
+                <option value="Tanya Verma">Tanya Verma</option>
+                <option value="Afreen Hayat">Afreen Hayat</option>
+                <option value="Sonu Singh">Sonu Singh</option>
+                <option value="Sweksha">Sweksha</option>
+                <option value="Vikas Tiwari">Vikas Tiwari</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label><i class="fa-solid fa-ranking-star" style="color:var(--startek-red)"></i> Grade:</label>
+            <select id="grade-filter" onchange="applyFilters()">
+                <option value="all">All Grades</option>
+                <option value="A+">A+</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+        </div>
+        <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input class="search-input" type="text" id="search-input" placeholder="Search agent name…" oninput="applyFilters()" style="width:190px">
+        </div>
+        <div class="controls-spacer"></div>
+        <span class="export-label"><i class="fa-solid fa-download"></i> Export:</span>
+        <div class="export-group">
+            <button class="btn-export btn-csv"   onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button>
+            <button class="btn-export btn-excel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button>
+            <button class="btn-export btn-pdf"   onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            <button class="btn-export btn-copy"  onclick="copyTable()"><i class="fa-solid fa-copy"></i> Copy</button>
+        </div>
+    </div>
 
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80475384",
-            "Full Name": "Almas Taj",
-            "TL": "Vikas Tiwari",
-            "Attendance": "23",
-            "Achieved target": "191.56%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80475251",
-            "Full Name": "Amar Saini",
-            "TL": "Samreena Khan",
-            "Attendance": "22",
-            "Achieved target": "170.85%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80500690",
-            "Full Name": "Tanzeem Fatima",
-            "TL": "Samreena Khan",
-            "Attendance": "22",
-            "Achieved target": "143.55%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80541207",
-            "Full Name": "Ankita Bharti",
-            "TL": "Afreen Hayat",
-            "Attendance": "19",
-            "Achieved target": "139.64%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80551327",
-            "Full Name": "John Abbas",
-            "TL": "Vikas Tiwari",
-            "Attendance": "26",
-            "Achieved target": "131.98%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80530776",
-            "Full Name": "Aman Chauhan",
-            "TL": "Samreena Khan",
-            "Attendance": "24",
-            "Achieved target": "128.63%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80512309",
-            "Full Name": "Aditya Patel",
-            "TL": "Samreena Khan",
-            "Attendance": "24",
-            "Achieved target": "121.13%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81021105",
-            "Full Name": "Divya Kashyap",
-            "TL": "Samreena Khan",
-            "Attendance": "26",
-            "Achieved target": "117.22%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81098215",
-            "Full Name": "Salman Khan",
-            "TL": "Tanya Verma",
-            "Attendance": "25",
-            "Achieved target": "115.85%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81065829",
-            "Full Name": "PRIYANKA PRAJAPATI",
-            "TL": "Tanya Verma",
-            "Attendance": "25",
-            "Achieved target": "115.67%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81065803",
-            "Full Name": "KHAIRUN NISA",
-            "TL": "Tanya Verma",
-            "Attendance": "26",
-            "Achieved target": "115.30%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81059324",
-            "Full Name": "Iqra Musab",
-            "TL": "Tanya Verma",
-            "Attendance": "25",
-            "Achieved target": "114.38%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81055968",
-            "Full Name": "Neha Adhikari",
-            "TL": "Tanya Verma",
-            "Attendance": "24",
-            "Achieved target": "114.36%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80450712",
-            "Full Name": "Rupali Srivastava",
-            "TL": "Tanya Verma",
-            "Attendance": "25",
-            "Achieved target": "114.14%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81051920",
-            "Full Name": "Anshika Mishra",
-            "TL": "Tanya Verma",
-            "Attendance": "24",
-            "Achieved target": "112.73%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80476175",
-            "Full Name": "Aiman Fatma",
-            "TL": "Vikas Tiwari",
-            "Attendance": "23",
-            "Achieved target": "112.43%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81098216",
-            "Full Name": "Shubham",
-            "TL": "Tanya Verma",
-            "Attendance": "25",
-            "Achieved target": "111.77%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81055960",
-            "Full Name": "Sakshi Srivastava",
-            "TL": "Samreena Khan",
-            "Attendance": "24",
-            "Achieved target": "111.39%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80492346",
-            "Full Name": "Preetu Pandey",
-            "TL": "Samreena Khan",
-            "Attendance": "26",
-            "Achieved target": "110.71%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80549410",
-            "Full Name": "Savita Pal",
-            "TL": "Tanya Verma",
-            "Attendance": "22",
-            "Achieved target": "110.00%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80502439",
-            "Full Name": "Divya Yadav",
-            "TL": "Vikas Tiwari",
-            "Attendance": "24",
-            "Achieved target": "109.81%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80550125",
-            "Full Name": "Anshika Awasthi",
-            "TL": "Tanya Verma",
-            "Attendance": "21",
-            "Achieved target": "109.09%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80539692",
-            "Full Name": "Muskan Chandel",
-            "TL": "Afreen Hayat",
-            "Attendance": "24",
-            "Achieved target": "107.39%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80537591",
-            "Full Name": "Nancy Sahu",
-            "TL": "Samreena Khan",
-            "Attendance": "25",
-            "Achieved target": "105.17%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80516233",
-            "Full Name": "Ila Nagar",
-            "TL": "Sonu Singh",
-            "Attendance": "25",
-            "Achieved target": "104.64%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80508742",
-            "Full Name": "Amarjeet Kumar",
-            "TL": "Afreen Hayat",
-            "Attendance": "26",
-            "Achieved target": "104.46%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80530962",
-            "Full Name": "Kanishka Anand",
-            "TL": "Afreen Hayat",
-            "Attendance": "26",
-            "Achieved target": "104.46%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80522247",
-            "Full Name": "Vikrant Kumar",
-            "TL": "Tanya Verma",
-            "Attendance": "20",
-            "Achieved target": "104.23%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80551326",
-            "Full Name": "Nisha Bisht",
-            "TL": "Afreen Hayat",
-            "Attendance": "26",
-            "Achieved target": "104.14%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81076191",
-            "Full Name": "Rangila",
-            "TL": "Sweksha",
-            "Attendance": "26",
-            "Achieved target": "103.98%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80538230",
-            "Full Name": "Rajpal Yadav",
-            "TL": "Sonu Singh",
-            "Attendance": "25",
-            "Achieved target": "103.85%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80549402",
-            "Full Name": "Aditi Singh",
-            "TL": "Samreena Khan",
-            "Attendance": "24",
-            "Achieved target": "103.81%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80552396",
-            "Full Name": "Pooja Gautam",
-            "TL": "Afreen Hayat",
-            "Attendance": "26",
-            "Achieved target": "103.64%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099358",
-            "Full Name": "Diksha Thakur",
-            "TL": "Afreen Hayat",
-            "Attendance": "24",
-            "Achieved target": "103.28%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81098218",
-            "Full Name": "Laxmi bai",
-            "TL": "Sweksha",
-            "Attendance": "25",
-            "Achieved target": "103.24%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80522262",
-            "Full Name": "Sanno Yadav",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "102.93%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80538952",
-            "Full Name": "Deepali Yadav",
-            "TL": "Afreen Hayat",
-            "Attendance": "26",
-            "Achieved target": "102.89%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81051886",
-            "Full Name": "Shivanand Singh",
-            "TL": "Sweksha",
-            "Attendance": "25",
-            "Achieved target": "102.80%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80520409",
-            "Full Name": "Vijay Chauhan",
-            "TL": "Tanya Verma",
-            "Attendance": "25",
-            "Achieved target": "102.58%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099359",
-            "Full Name": "Yatin Manocha",
-            "TL": "Sweksha",
-            "Attendance": "25",
-            "Achieved target": "102.49%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81085541",
-            "Full Name": "POONAM KUMARI",
-            "TL": "Afreen Hayat",
-            "Attendance": "25",
-            "Achieved target": "102.48%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81114576",
-            "Full Name": "ANUJA RAMAKRISHNA SHASHTRIBUDDHE ",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "102.44%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099355",
-            "Full Name": "Alisha Bano",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "102.38%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81053178",
-            "Full Name": "Urooj Wakeel Siddiqui",
-            "TL": "Afreen Hayat",
-            "Attendance": "25",
-            "Achieved target": "101.98%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80539686",
-            "Full Name": "Iqra Rais",
-            "TL": "Samreena Khan",
-            "Attendance": "26",
-            "Achieved target": "101.95%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099369",
-            "Full Name": "Nisha Sen",
-            "TL": "Sonu Singh",
-            "Attendance": "25",
-            "Achieved target": "101.83%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80475242",
-            "Full Name": "Kavita Sharma",
-            "TL": "Afreen Hayat",
-            "Attendance": "24",
-            "Achieved target": "101.83%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81094665",
-            "Full Name": "RAJEEV KARORIYA",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "101.25%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81021052",
-            "Full Name": "Shilpi Upadhyay",
-            "TL": "Sweksha",
-            "Attendance": "24",
-            "Achieved target": "101.23%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80538950",
-            "Full Name": "Rati Talreja",
-            "TL": "Samreena Khan",
-            "Attendance": "25",
-            "Achieved target": "100.60%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80487994",
-            "Full Name": "Vashalee Pandey",
-            "TL": "Afreen Hayat",
-            "Attendance": "23",
-            "Achieved target": "100.59%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81051880",
-            "Full Name": "Radha Shukla",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "100.24%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81021056",
-            "Full Name": "Nikhil Singh",
-            "TL": "Sweksha",
-            "Attendance": "24",
-            "Achieved target": "100.22%",
-            "Grade": "A+"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81114573",
-            "Full Name": "Reena Jha",
-            "TL": "Afreen Hayat",
-            "Attendance": "22",
-            "Achieved target": "99.98%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81114575",
-            "Full Name": "SIMRAN  VISHWAKARMA",
-            "TL": "Afreen Hayat",
-            "Attendance": "21",
-            "Achieved target": "99.31%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099363",
-            "Full Name": "Gautam Jain",
-            "TL": "Sonu Singh",
-            "Attendance": "23",
-            "Achieved target": "99.21%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81051884",
-            "Full Name": "Anuradha Na",
-            "TL": "Sweksha",
-            "Attendance": "21",
-            "Achieved target": "98.64%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80502442",
-            "Full Name": "Muskan Singh",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "98.63%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80502431",
-            "Full Name": "Anamika Verma",
-            "TL": "Afreen Hayat",
-            "Attendance": "22",
-            "Achieved target": "98.07%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81094564",
-            "Full Name": "Monika 1",
-            "TL": "Afreen Hayat",
-            "Attendance": "20",
-            "Achieved target": "97.81%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81094482",
-            "Full Name": "Samridhi Kohli",
-            "TL": "Sweksha",
-            "Attendance": "21",
-            "Achieved target": "97.68%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80541191",
-            "Full Name": "Rishikesh Srivastava",
-            "TL": "Samreena Khan",
-            "Attendance": "25",
-            "Achieved target": "97.63%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099357",
-            "Full Name": "Kunal Jain",
-            "TL": "Afreen Hayat",
-            "Attendance": "20",
-            "Achieved target": "97.62%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81085327",
-            "Full Name": "SHUBHRATO  SINGH RAJPUT",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "97.56%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81094655",
-            "Full Name": "KUSHAMA 1",
-            "TL": "Afreen Hayat",
-            "Attendance": "20",
-            "Achieved target": "96.16%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80552391",
-            "Full Name": "Priyanshi Rastogi",
-            "TL": "Afreen Hayat",
-            "Attendance": "16",
-            "Achieved target": "93.44%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80502446",
-            "Full Name": "Anshu Sharma",
-            "TL": "Vikas Tiwari",
-            "Attendance": "25",
-            "Achieved target": "92.40%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80552400",
-            "Full Name": "Ashish Kushwaha",
-            "TL": "Sonu Singh",
-            "Attendance": "22",
-            "Achieved target": "91.71%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80541200",
-            "Full Name": "Inzamam Ahmad",
-            "TL": "Tanya Verma",
-            "Attendance": "25",
-            "Achieved target": "91.68%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80475239",
-            "Full Name": "Darakshan Rahman",
-            "TL": "Samreena Khan",
-            "Attendance": "25",
-            "Achieved target": "91.52%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80551343",
-            "Full Name": "Harshit Kumar",
-            "TL": "Vikas Tiwari",
-            "Attendance": "24",
-            "Achieved target": "91.43%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80550138",
-            "Full Name": "Deepanjali Sahu",
-            "TL": "Tanya Verma",
-            "Attendance": "22",
-            "Achieved target": "91.08%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81113063",
-            "Full Name": "Suhail Khan",
-            "TL": "Sonu Singh",
-            "Attendance": "24",
-            "Achieved target": "90.81%",
-            "Grade": "A"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81098212",
-            "Full Name": "Adeeba Khan",
-            "TL": "Sweksha",
-            "Attendance": "24",
-            "Achieved target": "89.80%",
-            "Grade": "B"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80520408",
-            "Full Name": "Akhilesh Chauhan",
-            "TL": "Samreena Khan",
-            "Attendance": "26",
-            "Achieved target": "89.14%",
-            "Grade": "B"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81113035",
-            "Full Name": "SartajRizvi",
-            "TL": "Sweksha",
-            "Attendance": "14",
-            "Achieved target": "87.30%",
-            "Grade": "B"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80549404",
-            "Full Name": "Anurag Mani Tripathi",
-            "TL": "Samreena Khan",
-            "Attendance": "21",
-            "Achieved target": "86.98%",
-            "Grade": "B"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81021054",
-            "Full Name": "Aditi Dixit",
-            "TL": "Tanya Verma",
-            "Attendance": "22",
-            "Achieved target": "86.93%",
-            "Grade": "B"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81103571",
-            "Full Name": "Aditya Rawat",
-            "TL": "Sweksha",
-            "Attendance": "12",
-            "Achieved target": "86.59%",
-            "Grade": "B"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80519432",
-            "Full Name": "Shivani Pandey",
-            "TL": "Vikas Tiwari",
-            "Attendance": "16",
-            "Achieved target": "76.90%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80549414",
-            "Full Name": "Aditya Singh",
-            "TL": "Tanya Verma",
-            "Attendance": "21",
-            "Achieved target": "71.91%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81113058",
-            "Full Name": "Mohd Azhad",
-            "TL": "Sonu Singh",
-            "Attendance": "15",
-            "Achieved target": "71.87%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099547",
-            "Full Name": "Rajani Shukla",
-            "TL": "Sweksha",
-            "Attendance": "8",
-            "Achieved target": "65.56%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81114574",
-            "Full Name": "Gautam Kanojia",
-            "TL": "Afreen Hayat",
-            "Attendance": "23",
-            "Achieved target": "60.19%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80538238",
-            "Full Name": "Rishu",
-            "TL": "Sweksha",
-            "Attendance": "23",
-            "Achieved target": "59.87%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81094662",
-            "Full Name": "KANCHAN 1",
-            "TL": "Afreen Hayat",
-            "Attendance": "21",
-            "Achieved target": "59.75%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80539693",
-            "Full Name": "Manisha Chandel",
-            "TL": "Afreen Hayat",
-            "Attendance": "22",
-            "Achieved target": "59.03%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81021104",
-            "Full Name": "Akansha Dubey",
-            "TL": "Sweksha",
-            "Attendance": "20",
-            "Achieved target": "58.58%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80539690",
-            "Full Name": "Pragati Sinha",
-            "TL": "Sweksha",
-            "Attendance": "21",
-            "Achieved target": "58.11%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80490352",
-            "Full Name": "Kartikay Gupta",
-            "TL": "Vikas Tiwari",
-            "Attendance": "26",
-            "Achieved target": "56.63%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80476295",
-            "Full Name": "Sameena Anjum",
-            "TL": "Vikas Tiwari",
-            "Attendance": "25",
-            "Achieved target": "55.82%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80551961",
-            "Full Name": "Rahma Muzzammil",
-            "TL": "Vikas Tiwari",
-            "Attendance": "21",
-            "Achieved target": "55.49%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81047333",
-            "Full Name": "Kritika Singh",
-            "TL": "Vikas Tiwari",
-            "Attendance": "24",
-            "Achieved target": "54.30%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099546",
-            "Full Name": "Akansha Rathour",
-            "TL": "Sonu Singh",
-            "Attendance": "17",
-            "Achieved target": "53.84%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80530789",
-            "Full Name": "Sparsh Mishra",
-            "TL": "Vikas Tiwari",
-            "Attendance": "25",
-            "Achieved target": "51.89%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80490858",
-            "Full Name": "Mohd Saquib Fareed",
-            "TL": "Vikas Tiwari",
-            "Attendance": "25",
-            "Achieved target": "51.44%",
-            "Grade": "C"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80457681",
-            "Full Name": "Fathima Kousar",
-            "TL": "Vikas Tiwari",
-            "Attendance": "25",
-            "Achieved target": "49.42%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80492347",
-            "Full Name": "Roopali Srivastava",
-            "TL": "Vikas Tiwari",
-            "Attendance": "26",
-            "Achieved target": "47.93%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80476305",
-            "Full Name": "Roopa",
-            "TL": "Vikas Tiwari",
-            "Attendance": "20",
-            "Achieved target": "43.26%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80530992",
-            "Full Name": "Km Juhee",
-            "TL": "Vikas Tiwari",
-            "Attendance": "23",
-            "Achieved target": "42.60%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80538948",
-            "Full Name": "Swapnil Kumar",
-            "TL": "Vikas Tiwari",
-            "Attendance": "21",
-            "Achieved target": "40.83%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80493316",
-            "Full Name": "Chowdri Ghulam Jeelani",
-            "TL": "Vikas Tiwari",
-            "Attendance": "23",
-            "Achieved target": "34.99%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81077165",
-            "Full Name": "Mohith V",
-            "TL": "Sweksha",
-            "Attendance": "5",
-            "Achieved target": "34.68%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80459980",
-            "Full Name": "Sabnam Firdosh",
-            "TL": "Vikas Tiwari",
-            "Attendance": "22",
-            "Achieved target": "32.73%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80549395",
-            "Full Name": "Narayan Kandhari",
-            "TL": "Samreena Khan",
-            "Attendance": "26",
-            "Achieved target": "31.20%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80549403",
-            "Full Name": "Rayyan Jalal",
-            "TL": "Tanya Verma",
-            "Attendance": "3",
-            "Achieved target": "3.60%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81051889",
-            "Full Name": "Manjali Sharma",
-            "TL": "Sonu Singh",
-            "Attendance": "1",
-            "Achieved target": "1.20%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81099367",
-            "Full Name": "Priya Maurya",
-            "TL": "Sonu Singh",
-            "Attendance": "0",
-            "Achieved target": "0.00%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "80538943",
-            "Full Name": "Shipra Awasthi",
-            "TL": "Sweksha",
-            "Attendance": "0",
-            "Achieved target": "0.00%",
-            "Grade": "D"
-        },
-        {
-            "LOB": "SPF",
-            "Location": "Lucknow",
-            "Sap ID": "81065804",
-            "Full Name": "BHAWNA PAL",
-            "TL": "Tanya Verma",
-            "Attendance": "0",
-            "Achieved target": "0.00%",
-            "Grade": "D"
-        }
-    ];
+    <!-- MAIN GRID: TL SUMMARY + CHART -->
+    <div class="grid-split">
+        <!-- TL Summary Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-table-columns"></i> Team Leader Overview</h2>
+            </div>
+            <div class="card-body" style="padding-top:12px">
+                <div class="table-wrap" id="tl-summary-wrapper"></div>
+            </div>
+        </div>
 
-        let performanceChartInstance = null;
+        <!-- Chart -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-chart-bar"></i> Avg Target by TL</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-wrap"><canvas id="tlPerformanceChart"></canvas></div>
+            </div>
+        </div>
+    </div>
 
-        function getGradeClass(grade) {
-            if (grade === 'A+') return 'badge-aplus';
-            if (grade === 'A') return 'badge-a';
-            if (grade === 'B') return 'badge-b';
-            return 'badge-other';
-        }
+    <!-- AGENT TABLE -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fa-solid fa-id-badge"></i> Agent Performance Details</h2>
+            <span id="agent-count-badge" style="font-size:0.8rem;color:var(--muted);font-weight:500"></span>
+        </div>
+        <div class="card-body" style="padding:0 0 4px">
+            <div class="table-wrap" id="agent-table-wrapper"></div>
+        </div>
+    </div>
 
-        function calculateTLPerformance() {
-            const tls = ["Samreena Khan", "Tanya Verma"];
-            let tlSummaryData = [];
-            let labels = [];
-            let targets = [];
+</div><!-- /page-body -->
 
-            tls.forEach(tlName => {
-                const team = rawDataset.filter(agent => agent.TL === tlName);
-                if(team.length === 0) return;
+<!-- FOOTER -->
+<div class="footer">
+    Powered by <span>Startek</span> · Flipkart SPF Operations · Lucknow &nbsp;|&nbsp; Confidential Internal Report
+</div>
 
-                let totalTarget = 0;
-                let totalAttendance = 0;
-                let aPlusCount = 0;
+<!-- WATERMARK -->
+<div class="wm"><div class="wm-dot"></div> Startek Internal</div>
 
-                team.forEach(agent => {
-                    totalTarget += parseFloat(agent["Achieved target"]);
-                    totalAttendance += parseFloat(agent.Attendance);
-                    if(agent.Grade === 'A+') aPlusCount++;
-                });
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Done</span></div>
 
-                let avgTarget = (totalTarget / team.length).toFixed(2);
-                let avgAttendance = (totalAttendance / team.length).toFixed(1);
+<script>
+const rawDataset = [
+    {"Sap ID":"80475384","Full Name":"Almas Taj","TL":"Vikas Tiwari","Attendance":"23","Achieved target":"191.56%","Grade":"A+"},
+    {"Sap ID":"80475251","Full Name":"Amar Saini","TL":"Samreena Khan","Attendance":"22","Achieved target":"170.85%","Grade":"A+"},
+    {"Sap ID":"80500690","Full Name":"Tanzeem Fatima","TL":"Samreena Khan","Attendance":"22","Achieved target":"143.55%","Grade":"A+"},
+    {"Sap ID":"80541207","Full Name":"Ankita Bharti","TL":"Afreen Hayat","Attendance":"19","Achieved target":"139.64%","Grade":"A+"},
+    {"Sap ID":"80551327","Full Name":"John Abbas","TL":"Vikas Tiwari","Attendance":"26","Achieved target":"131.98%","Grade":"A+"},
+    {"Sap ID":"80530776","Full Name":"Aman Chauhan","TL":"Samreena Khan","Attendance":"24","Achieved target":"128.63%","Grade":"A+"},
+    {"Sap ID":"80512309","Full Name":"Aditya Patel","TL":"Samreena Khan","Attendance":"24","Achieved target":"121.13%","Grade":"A+"},
+    {"Sap ID":"81021105","Full Name":"Divya Kashyap","TL":"Samreena Khan","Attendance":"26","Achieved target":"117.22%","Grade":"A+"},
+    {"Sap ID":"81098215","Full Name":"Salman Khan","TL":"Tanya Verma","Attendance":"25","Achieved target":"115.85%","Grade":"A+"},
+    {"Sap ID":"81065829","Full Name":"PRIYANKA PRAJAPATI","TL":"Tanya Verma","Attendance":"25","Achieved target":"115.67%","Grade":"A+"},
+    {"Sap ID":"81065803","Full Name":"KHAIRUN NISA","TL":"Tanya Verma","Attendance":"26","Achieved target":"115.30%","Grade":"A+"},
+    {"Sap ID":"81059324","Full Name":"Iqra Musab","TL":"Tanya Verma","Attendance":"25","Achieved target":"114.38%","Grade":"A+"},
+    {"Sap ID":"81055968","Full Name":"Neha Adhikari","TL":"Tanya Verma","Attendance":"24","Achieved target":"114.36%","Grade":"A+"},
+    {"Sap ID":"80450712","Full Name":"Rupali Srivastava","TL":"Tanya Verma","Attendance":"25","Achieved target":"114.14%","Grade":"A+"},
+    {"Sap ID":"81051920","Full Name":"Anshika Mishra","TL":"Tanya Verma","Attendance":"24","Achieved target":"112.73%","Grade":"A+"},
+    {"Sap ID":"80476175","Full Name":"Aiman Fatma","TL":"Vikas Tiwari","Attendance":"23","Achieved target":"112.43%","Grade":"A+"},
+    {"Sap ID":"81098216","Full Name":"Shubham","TL":"Tanya Verma","Attendance":"25","Achieved target":"111.77%","Grade":"A+"},
+    {"Sap ID":"81055960","Full Name":"Sakshi Srivastava","TL":"Samreena Khan","Attendance":"24","Achieved target":"111.39%","Grade":"A+"},
+    {"Sap ID":"80492346","Full Name":"Preetu Pandey","TL":"Samreena Khan","Attendance":"26","Achieved target":"110.71%","Grade":"A+"},
+    {"Sap ID":"80549410","Full Name":"Savita Pal","TL":"Tanya Verma","Attendance":"22","Achieved target":"110.00%","Grade":"A+"},
+    {"Sap ID":"80502439","Full Name":"Divya Yadav","TL":"Vikas Tiwari","Attendance":"24","Achieved target":"109.81%","Grade":"A+"},
+    {"Sap ID":"80550125","Full Name":"Anshika Awasthi","TL":"Tanya Verma","Attendance":"21","Achieved target":"109.09%","Grade":"A+"},
+    {"Sap ID":"80539692","Full Name":"Muskan Chandel","TL":"Afreen Hayat","Attendance":"24","Achieved target":"107.39%","Grade":"A+"},
+    {"Sap ID":"80537591","Full Name":"Nancy Sahu","TL":"Samreena Khan","Attendance":"25","Achieved target":"105.17%","Grade":"A+"},
+    {"Sap ID":"80516233","Full Name":"Ila Nagar","TL":"Sonu Singh","Attendance":"25","Achieved target":"104.64%","Grade":"A+"},
+    {"Sap ID":"80508742","Full Name":"Amarjeet Kumar","TL":"Afreen Hayat","Attendance":"26","Achieved target":"104.46%","Grade":"A+"},
+    {"Sap ID":"80530962","Full Name":"Kanishka Anand","TL":"Afreen Hayat","Attendance":"26","Achieved target":"104.46%","Grade":"A+"},
+    {"Sap ID":"80522247","Full Name":"Vikrant Kumar","TL":"Tanya Verma","Attendance":"20","Achieved target":"104.23%","Grade":"A+"},
+    {"Sap ID":"80551326","Full Name":"Nisha Bisht","TL":"Afreen Hayat","Attendance":"26","Achieved target":"104.14%","Grade":"A+"},
+    {"Sap ID":"81076191","Full Name":"Rangila","TL":"Sweksha","Attendance":"26","Achieved target":"103.98%","Grade":"A+"},
+    {"Sap ID":"80538230","Full Name":"Rajpal Yadav","TL":"Sonu Singh","Attendance":"25","Achieved target":"103.85%","Grade":"A+"},
+    {"Sap ID":"80549402","Full Name":"Aditi Singh","TL":"Samreena Khan","Attendance":"24","Achieved target":"103.81%","Grade":"A+"},
+    {"Sap ID":"80552396","Full Name":"Pooja Gautam","TL":"Afreen Hayat","Attendance":"26","Achieved target":"103.64%","Grade":"A+"},
+    {"Sap ID":"81099358","Full Name":"Diksha Thakur","TL":"Afreen Hayat","Attendance":"24","Achieved target":"103.28%","Grade":"A+"},
+    {"Sap ID":"81098218","Full Name":"Laxmi bai","TL":"Sweksha","Attendance":"25","Achieved target":"103.24%","Grade":"A+"},
+    {"Sap ID":"80522262","Full Name":"Sanno Yadav","TL":"Sonu Singh","Attendance":"24","Achieved target":"102.93%","Grade":"A+"},
+    {"Sap ID":"80538952","Full Name":"Deepali Yadav","TL":"Afreen Hayat","Attendance":"26","Achieved target":"102.89%","Grade":"A+"},
+    {"Sap ID":"81051886","Full Name":"Shivanand Singh","TL":"Sweksha","Attendance":"25","Achieved target":"102.80%","Grade":"A+"},
+    {"Sap ID":"80520409","Full Name":"Vijay Chauhan","TL":"Tanya Verma","Attendance":"25","Achieved target":"102.58%","Grade":"A+"},
+    {"Sap ID":"81099359","Full Name":"Yatin Manocha","TL":"Sweksha","Attendance":"25","Achieved target":"102.49%","Grade":"A+"},
+    {"Sap ID":"81085541","Full Name":"POONAM KUMARI","TL":"Afreen Hayat","Attendance":"25","Achieved target":"102.48%","Grade":"A+"},
+    {"Sap ID":"81114576","Full Name":"ANUJA RAMAKRISHNA SHASHTRIBUDDHE","TL":"Sonu Singh","Attendance":"24","Achieved target":"102.44%","Grade":"A+"},
+    {"Sap ID":"81099355","Full Name":"Alisha Bano","TL":"Sonu Singh","Attendance":"24","Achieved target":"102.38%","Grade":"A+"},
+    {"Sap ID":"81053178","Full Name":"Urooj Wakeel Siddiqui","TL":"Afreen Hayat","Attendance":"25","Achieved target":"101.98%","Grade":"A+"},
+    {"Sap ID":"80539686","Full Name":"Iqra Rais","TL":"Samreena Khan","Attendance":"26","Achieved target":"101.95%","Grade":"A+"},
+    {"Sap ID":"81099369","Full Name":"Nisha Sen","TL":"Sonu Singh","Attendance":"25","Achieved target":"101.83%","Grade":"A+"},
+    {"Sap ID":"80475242","Full Name":"Kavita Sharma","TL":"Afreen Hayat","Attendance":"24","Achieved target":"101.83%","Grade":"A+"},
+    {"Sap ID":"81094665","Full Name":"RAJEEV KARORIYA","TL":"Sonu Singh","Attendance":"24","Achieved target":"101.25%","Grade":"A+"},
+    {"Sap ID":"81021052","Full Name":"Shilpi Upadhyay","TL":"Sweksha","Attendance":"24","Achieved target":"101.23%","Grade":"A+"},
+    {"Sap ID":"80538950","Full Name":"Rati Talreja","TL":"Samreena Khan","Attendance":"25","Achieved target":"100.60%","Grade":"A+"},
+    {"Sap ID":"80487994","Full Name":"Vashalee Pandey","TL":"Afreen Hayat","Attendance":"23","Achieved target":"100.59%","Grade":"A+"},
+    {"Sap ID":"81051880","Full Name":"Radha Shukla","TL":"Sonu Singh","Attendance":"24","Achieved target":"100.24%","Grade":"A+"},
+    {"Sap ID":"81021056","Full Name":"Nikhil Singh","TL":"Sweksha","Attendance":"24","Achieved target":"100.22%","Grade":"A+"},
+    {"Sap ID":"81114573","Full Name":"Reena Jha","TL":"Afreen Hayat","Attendance":"22","Achieved target":"99.98%","Grade":"A"},
+    {"Sap ID":"81114575","Full Name":"SIMRAN VISHWAKARMA","TL":"Afreen Hayat","Attendance":"21","Achieved target":"99.31%","Grade":"A"},
+    {"Sap ID":"81099363","Full Name":"Gautam Jain","TL":"Sonu Singh","Attendance":"23","Achieved target":"99.21%","Grade":"A"},
+    {"Sap ID":"81051884","Full Name":"Anuradha Na","TL":"Sweksha","Attendance":"21","Achieved target":"98.64%","Grade":"A"},
+    {"Sap ID":"80502442","Full Name":"Muskan Singh","TL":"Sonu Singh","Attendance":"24","Achieved target":"98.63%","Grade":"A"},
+    {"Sap ID":"80502431","Full Name":"Anamika Verma","TL":"Afreen Hayat","Attendance":"22","Achieved target":"98.07%","Grade":"A"},
+    {"Sap ID":"81094564","Full Name":"Monika 1","TL":"Afreen Hayat","Attendance":"20","Achieved target":"97.81%","Grade":"A"},
+    {"Sap ID":"81094482","Full Name":"Samridhi Kohli","TL":"Sweksha","Attendance":"21","Achieved target":"97.68%","Grade":"A"},
+    {"Sap ID":"80541191","Full Name":"Rishikesh Srivastava","TL":"Samreena Khan","Attendance":"25","Achieved target":"97.63%","Grade":"A"},
+    {"Sap ID":"81099357","Full Name":"Kunal Jain","TL":"Afreen Hayat","Attendance":"20","Achieved target":"97.62%","Grade":"A"},
+    {"Sap ID":"81085327","Full Name":"SHUBHRATO SINGH RAJPUT","TL":"Sonu Singh","Attendance":"24","Achieved target":"97.56%","Grade":"A"},
+    {"Sap ID":"81094655","Full Name":"KUSHAMA 1","TL":"Afreen Hayat","Attendance":"20","Achieved target":"96.16%","Grade":"A"},
+    {"Sap ID":"80552391","Full Name":"Priyanshi Rastogi","TL":"Afreen Hayat","Attendance":"16","Achieved target":"93.44%","Grade":"A"},
+    {"Sap ID":"80502446","Full Name":"Anshu Sharma","TL":"Vikas Tiwari","Attendance":"25","Achieved target":"92.40%","Grade":"A"},
+    {"Sap ID":"80552400","Full Name":"Ashish Kushwaha","TL":"Sonu Singh","Attendance":"22","Achieved target":"91.71%","Grade":"A"},
+    {"Sap ID":"80541200","Full Name":"Inzamam Ahmad","TL":"Tanya Verma","Attendance":"25","Achieved target":"91.68%","Grade":"A"},
+    {"Sap ID":"80475239","Full Name":"Darakshan Rahman","TL":"Samreena Khan","Attendance":"25","Achieved target":"91.52%","Grade":"A"},
+    {"Sap ID":"80551343","Full Name":"Harshit Kumar","TL":"Vikas Tiwari","Attendance":"24","Achieved target":"91.43%","Grade":"A"},
+    {"Sap ID":"80550138","Full Name":"Deepanjali Sahu","TL":"Tanya Verma","Attendance":"22","Achieved target":"91.08%","Grade":"A"},
+    {"Sap ID":"81113063","Full Name":"Suhail Khan","TL":"Sonu Singh","Attendance":"24","Achieved target":"90.81%","Grade":"A"},
+    {"Sap ID":"81098212","Full Name":"Adeeba Khan","TL":"Sweksha","Attendance":"24","Achieved target":"89.80%","Grade":"B"},
+    {"Sap ID":"80520408","Full Name":"Akhilesh Chauhan","TL":"Samreena Khan","Attendance":"26","Achieved target":"89.14%","Grade":"B"},
+    {"Sap ID":"81113035","Full Name":"SartajRizvi","TL":"Sweksha","Attendance":"14","Achieved target":"87.30%","Grade":"B"},
+    {"Sap ID":"80549404","Full Name":"Anurag Mani Tripathi","TL":"Samreena Khan","Attendance":"21","Achieved target":"86.98%","Grade":"B"},
+    {"Sap ID":"81021054","Full Name":"Aditi Dixit","TL":"Tanya Verma","Attendance":"22","Achieved target":"86.93%","Grade":"B"},
+    {"Sap ID":"81103571","Full Name":"Aditya Rawat","TL":"Sweksha","Attendance":"12","Achieved target":"86.59%","Grade":"B"},
+    {"Sap ID":"80519432","Full Name":"Shivani Pandey","TL":"Vikas Tiwari","Attendance":"16","Achieved target":"76.90%","Grade":"C"},
+    {"Sap ID":"80549414","Full Name":"Aditya Singh","TL":"Tanya Verma","Attendance":"21","Achieved target":"71.91%","Grade":"C"},
+    {"Sap ID":"81113058","Full Name":"Mohd Azhad","TL":"Sonu Singh","Attendance":"15","Achieved target":"71.87%","Grade":"C"},
+    {"Sap ID":"81099547","Full Name":"Rajani Shukla","TL":"Sweksha","Attendance":"8","Achieved target":"65.56%","Grade":"C"},
+    {"Sap ID":"81114574","Full Name":"Gautam Kanojia","TL":"Afreen Hayat","Attendance":"23","Achieved target":"60.19%","Grade":"C"},
+    {"Sap ID":"80538238","Full Name":"Rishu","TL":"Sweksha","Attendance":"23","Achieved target":"59.87%","Grade":"C"},
+    {"Sap ID":"81094662","Full Name":"KANCHAN 1","TL":"Afreen Hayat","Attendance":"21","Achieved target":"59.75%","Grade":"C"},
+    {"Sap ID":"80539693","Full Name":"Manisha Chandel","TL":"Afreen Hayat","Attendance":"22","Achieved target":"59.03%","Grade":"C"},
+    {"Sap ID":"81021104","Full Name":"Akansha Dubey","TL":"Sweksha","Attendance":"20","Achieved target":"58.58%","Grade":"C"},
+    {"Sap ID":"80539690","Full Name":"Pragati Sinha","TL":"Sweksha","Attendance":"21","Achieved target":"58.11%","Grade":"C"},
+    {"Sap ID":"80490352","Full Name":"Kartikay Gupta","TL":"Vikas Tiwari","Attendance":"26","Achieved target":"56.63%","Grade":"C"},
+    {"Sap ID":"80476295","Full Name":"Sameena Anjum","TL":"Vikas Tiwari","Attendance":"25","Achieved target":"55.82%","Grade":"C"},
+    {"Sap ID":"80551961","Full Name":"Rahma Muzzammil","TL":"Vikas Tiwari","Attendance":"21","Achieved target":"55.49%","Grade":"C"},
+    {"Sap ID":"81047333","Full Name":"Kritika Singh","TL":"Vikas Tiwari","Attendance":"24","Achieved target":"54.30%","Grade":"C"},
+    {"Sap ID":"81099546","Full Name":"Akansha Rathour","TL":"Sonu Singh","Attendance":"17","Achieved target":"53.84%","Grade":"C"},
+    {"Sap ID":"80530789","Full Name":"Sparsh Mishra","TL":"Vikas Tiwari","Attendance":"25","Achieved target":"51.89%","Grade":"C"},
+    {"Sap ID":"80490858","Full Name":"Mohd Saquib Fareed","TL":"Vikas Tiwari","Attendance":"25","Achieved target":"51.44%","Grade":"C"},
+    {"Sap ID":"80457681","Full Name":"Fathima Kousar","TL":"Vikas Tiwari","Attendance":"25","Achieved target":"49.42%","Grade":"D"},
+    {"Sap ID":"80492347","Full Name":"Roopali Srivastava","TL":"Vikas Tiwari","Attendance":"26","Achieved target":"47.93%","Grade":"D"},
+    {"Sap ID":"80476305","Full Name":"Roopa","TL":"Vikas Tiwari","Attendance":"20","Achieved target":"43.26%","Grade":"D"},
+    {"Sap ID":"80530992","Full Name":"Km Juhee","TL":"Vikas Tiwari","Attendance":"23","Achieved target":"42.60%","Grade":"D"},
+    {"Sap ID":"80538948","Full Name":"Swapnil Kumar","TL":"Vikas Tiwari","Attendance":"21","Achieved target":"40.83%","Grade":"D"},
+    {"Sap ID":"80493316","Full Name":"Chowdri Ghulam Jeelani","TL":"Vikas Tiwari","Attendance":"23","Achieved target":"34.99%","Grade":"D"},
+    {"Sap ID":"81077165","Full Name":"Mohith V","TL":"Sweksha","Attendance":"5","Achieved target":"34.68%","Grade":"D"},
+    {"Sap ID":"80459980","Full Name":"Sabnam Firdosh","TL":"Vikas Tiwari","Attendance":"22","Achieved target":"32.73%","Grade":"D"},
+    {"Sap ID":"80549395","Full Name":"Narayan Kandhari","TL":"Samreena Khan","Attendance":"26","Achieved target":"31.20%","Grade":"D"},
+    {"Sap ID":"80549403","Full Name":"Rayyan Jalal","TL":"Tanya Verma","Attendance":"3","Achieved target":"3.60%","Grade":"D"},
+    {"Sap ID":"81051889","Full Name":"Manjali Sharma","TL":"Sonu Singh","Attendance":"1","Achieved target":"1.20%","Grade":"D"},
+    {"Sap ID":"81099367","Full Name":"Priya Maurya","TL":"Sonu Singh","Attendance":"0","Achieved target":"0.00%","Grade":"D"},
+    {"Sap ID":"80538943","Full Name":"Shipra Awasthi","TL":"Sweksha","Attendance":"0","Achieved target":"0.00%","Grade":"D"},
+    {"Sap ID":"81065804","Full Name":"BHAWNA PAL","TL":"Tanya Verma","Attendance":"0","Achieved target":"0.00%","Grade":"D"}
+];
 
-                tlSummaryData.push({
-                    "TL Name": tlName,
-                    "Total Headcount": team.length,
-                    "Average Attendance (Days)": avgAttendance,
-                    "Average Target Achieved": avgTarget,
-                    "A+ Agents Count": aPlusCount
-                });
+let chartInstance = null;
+let currentFiltered = [...rawDataset];
 
-                labels.push(tlName.split(" ")[0]); // Use first name for chart clean visual look
-                targets.push(avgTarget);
-            });
+const TL_COLORS = {
+    'Samreena Khan': '#2874f0',
+    'Tanya Verma':   '#d7263d',
+    'Afreen Hayat':  '#10b981',
+    'Sonu Singh':    '#f59e0b',
+    'Sweksha':       '#8b5cf6',
+    'Vikas Tiwari':  '#0f3460'
+};
 
-            // Render modern HTML Data table
-            let html = '<table><thead><tr><th>TL Name</th><th>Headcount</th><th>Avg Attendance</th><th>Avg Target Achieved</th><th>A+ Performers</th></tr></thead><tbody>';
-            tlSummaryData.forEach(row => {
-                html += `<tr>
-                    <td><strong>${row["TL Name"]}</strong></td>
-                    <td>${row["Total Headcount"]}</td>
-                    <td>${row["Average Attendance (Days)"]} Days</td>
-                    <td><strong>${row["Average Target Achieved"]}%</strong></td>
-                    <td><span class="badge badge-aplus">${row["A+ Agents Count"]} Agents</span></td>
-                </tr>`;
-            });
-            html += '</tbody></table>';
-            document.getElementById('tl-summary-wrapper').innerHTML = html;
+function gradeClass(g) {
+    return g === 'A+' ? 'b-aplus' : g === 'A' ? 'b-a' : g === 'B' ? 'b-b' : g === 'C' ? 'b-c' : 'b-d';
+}
 
-            // Generate Chart Component
-            renderPerformanceChart(labels, targets);
-        }
+function numTarget(str) {
+    return parseFloat(str.replace('%',''));
+}
 
-        function renderPerformanceChart(labels, targets) {
-            const ctx = document.getElementById('tlPerformanceChart').getContext('2d');
-            
-            if (performanceChartInstance) {
-                performanceChartInstance.destroy();
+function computeKPIs(data) {
+    document.getElementById('kpi-count').textContent  = data.length;
+    document.getElementById('kpi-active').textContent = data.filter(a => parseInt(a.Attendance) > 0).length;
+    document.getElementById('kpi-aplus').textContent  = data.filter(a => a.Grade === 'A+').length;
+    const avg = data.length ? (data.reduce((s,a) => s + numTarget(a['Achieved target']),0)/data.length).toFixed(1) : '–';
+    document.getElementById('kpi-avg').textContent = avg !== '–' ? avg + '%' : '–';
+    const att = data.length ? (data.reduce((s,a) => s + parseFloat(a.Attendance),0)/data.length).toFixed(1) : '–';
+    document.getElementById('kpi-att').textContent = att !== '–' ? att + ' days' : '–';
+}
+
+function computeTLSummary(data) {
+    const tls = [...new Set(data.map(a => a.TL))].sort();
+    const rows = tls.map(tl => {
+        const team = data.filter(a => a.TL === tl);
+        const avgT  = (team.reduce((s,a) => s + numTarget(a['Achieved target']),0)/team.length).toFixed(1);
+        const avgAt = (team.reduce((s,a) => s + parseFloat(a.Attendance),0)/team.length).toFixed(1);
+        const ap = team.filter(a => a.Grade === 'A+').length;
+        return { tl, count: team.length, avgT, avgAt, ap };
+    });
+
+    let html = `<table>
+        <thead><tr>
+            <th>Team Leader</th><th>Count</th><th>Avg Attend.</th>
+            <th>Avg Target</th><th>A+ Agents</th><th>Progress</th>
+        </tr></thead><tbody>`;
+    rows.forEach(r => {
+        const col = TL_COLORS[r.tl] || '#2874f0';
+        const pct = Math.min(parseFloat(r.avgT), 150);
+        html += `<tr>
+            <td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${col};margin-right:7px;vertical-align:middle"></span><strong>${r.tl}</strong></td>
+            <td>${r.count}</td>
+            <td>${r.avgAt} days</td>
+            <td><strong>${r.avgT}%</strong></td>
+            <td><span class="badge b-aplus">${r.ap}</span></td>
+            <td>
+                <div class="prog-wrap">
+                    <div class="prog-bar"><div class="prog-fill" style="width:${(pct/150*100).toFixed(1)}%;background:${col}"></div></div>
+                    <span style="font-size:0.78rem;color:var(--muted);min-width:36px">${r.avgT}%</span>
+                </div>
+            </td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('tl-summary-wrapper').innerHTML = html;
+
+    renderChart(rows);
+}
+
+function renderChart(rows) {
+    const ctx = document.getElementById('tlPerformanceChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: rows.map(r => r.tl.split(' ')[0]),
+            datasets: [{
+                label: 'Avg Target %',
+                data: rows.map(r => parseFloat(r.avgT)),
+                backgroundColor: rows.map(r => TL_COLORS[r.tl] || '#2874f0'),
+                borderRadius: 6,
+                barThickness: 32
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toFixed(1) + '%' } }
+            },
+            scales: {
+                y: { beginAtZero: true, max: 160, ticks: { callback: v => v + '%' }, grid: { color: '#f1f5f9' } },
+                x: { grid: { display: false } }
             }
-
-            performanceChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Avg Target Achieved (%)',
-                        data: targets,
-                        backgroundColor: ['rgba(40, 116, 240, 0.85)', 'rgba(30, 58, 138, 0.85)'],
-                        borderColor: ['#2874f0', '#1e3a8a'],
-                        borderWidth: 1.5,
-                        borderRadius: 6,
-                        barThickness: 50
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 200,
-                            ticks: { callback: value => value + '%' }
-                        }
-                    }
-                }
-            });
         }
+    });
+}
 
-        function renderAgentTable(data) {
-            // Live update top KPIs summary based on selected filters
-            document.getElementById('kpi-count').innerText = data.length;
-            document.getElementById('kpi-aplus').innerText = data.filter(a => a.Grade === 'A+').length;
+function renderAgentTable(data) {
+    document.getElementById('agent-count-badge').textContent = data.length + ' agents';
+    if (!data.length) {
+        document.getElementById('agent-table-wrapper').innerHTML = '<p style="padding:20px;color:var(--muted);text-align:center">No agents match the selected filters.</p>';
+        return;
+    }
+    let html = `<table>
+        <thead><tr>
+            <th>#</th><th>SAP ID</th><th>Agent Name</th>
+            <th>Team Leader</th><th>Attendance</th>
+            <th>Target Achieved</th><th>Grade</th>
+        </tr></thead><tbody>`;
+    data.forEach((row, i) => {
+        const t = numTarget(row['Achieved target']);
+        const rowClass = t >= 100 ? 'rank-top' : t >= 80 ? '' : 'rank-low';
+        const col = TL_COLORS[row.TL] || '#64748b';
+        html += `<tr class="${rowClass}">
+            <td style="color:var(--muted);font-size:0.8rem">${i+1}</td>
+            <td><code style="font-size:0.8rem;color:var(--muted)">${row['Sap ID']}</code></td>
+            <td><strong>${row['Full Name']}</strong></td>
+            <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:6px;vertical-align:middle"></span>${row.TL}</td>
+            <td>${row.Attendance} days</td>
+            <td><strong>${row['Achieved target']}</strong></td>
+            <td><span class="badge ${gradeClass(row.Grade)}">${row.Grade}</span></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('agent-table-wrapper').innerHTML = html;
+}
 
-            if(data.length === 0) {
-                document.getElementById('agent-table-wrapper').innerHTML = "<p style='padding:20px; color:#64748b; text-align:center;'>No matching agent data available with selected criteria filters.</p>";
-                return;
-            }
+function applyFilters() {
+    const tl    = document.getElementById('tl-filter').value;
+    const grade = document.getElementById('grade-filter').value;
+    const q     = document.getElementById('search-input').value.trim().toLowerCase();
+    let d = rawDataset;
+    if (tl    !== 'all') d = d.filter(a => a.TL    === tl);
+    if (grade !== 'all') d = d.filter(a => a.Grade === grade);
+    if (q) d = d.filter(a => a['Full Name'].toLowerCase().includes(q));
+    currentFiltered = d;
+    computeKPIs(d);
+    computeTLSummary(d);
+    renderAgentTable(d);
+}
 
-            let html = `<table>
-                <thead>
-                    <tr>
-                        <th>Sap ID</th>
-                        <th>Agent Name</th>
-                        <th>Team Leader</th>
-                        <th>Attendance</th>
-                        <th>Handle Count</th>
-                        <th>Achieved Target</th>
-                        <th>Grade Rank</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+/* ── EXPORT FUNCTIONS ── */
+function getCSVContent(data) {
+    const headers = ['#','SAP ID','Full Name','Team Leader','Attendance','Achieved Target','Grade'];
+    const rows = data.map((r,i) => [i+1, r['Sap ID'], r['Full Name'], r.TL, r.Attendance, r['Achieved target'], r.Grade]);
+    return [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+}
 
-            data.forEach(row => {
-                html += `<tr>
-                    <td><span style="color:#64748b; font-family:monospace;">${row["Sap ID"]}</span></td>
-                    <td><strong>${row["Full Name"]}</strong></td>
-                    <td><i class="fa-solid fa-user-tie" style="color:#94a3b8; font-size:0.85rem;"></i> ${row["TL"]}</td>
-                    <td>${row["Attendance"]} Days</td>
-                    <td>${row["Handle count"]}</td>
-                    <td><strong>${row["Achieved target"]}</strong></td>
-                    <td><span class="badge ${getGradeClass(row["Grade"])}">${row["Grade"]}</span></td>
-                </tr>`;
-            });
+function downloadBlob(content, filename, mime) {
+    const blob = new Blob([content], { type: mime });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+}
 
-            html += '</tbody></table>';
-            document.getElementById('agent-table-wrapper').innerHTML = html;
-        }
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
 
-        function applyFilters() {
-            const tlValue = document.getElementById('tl-filter').value;
-            const gradeValue = document.getElementById('grade-filter').value;
+function exportCSV() {
+    downloadBlob(getCSVContent(currentFiltered), 'SPF_Team_RohitShukla.csv', 'text/csv;charset=utf-8;');
+    showToast('CSV downloaded successfully');
+}
 
-            let filteredData = rawDataset;
+function exportExcel() {
+    const csv = getCSVContent(currentFiltered);
+    downloadBlob("\uFEFF" + csv, 'SPF_Team_RohitShukla.csv', 'application/vnd.ms-excel;charset=utf-8;');
+    showToast('Excel-compatible CSV downloaded');
+}
 
-            if(tlValue !== 'all') {
-                filteredData = filteredData.filter(item => item.TL === tlValue);
-            }
+function exportPDF() {
+    const win = window.open('', '_blank');
+    if (!win) { showToast('Allow popups to export PDF'); return; }
+    const rows = currentFiltered.map((r,i) =>
+        `<tr><td>${i+1}</td><td>${r['Sap ID']}</td><td>${r['Full Name']}</td><td>${r.TL}</td><td>${r.Attendance}</td><td>${r['Achieved target']}</td><td>${r.Grade}</td></tr>`
+    ).join('');
+    win.document.write(`<!DOCTYPE html><html><head><title>SPF Dashboard – Startek</title><style>
+        body{font-family:Arial,sans-serif;padding:20px;color:#1e293b;font-size:12px}
+        h1{color:#1a1a2e;font-size:18px;margin-bottom:4px}
+        p{color:#64748b;margin-bottom:16px}
+        table{width:100%;border-collapse:collapse}
+        th{background:#1a1a2e;color:white;padding:8px 10px;text-align:left;font-size:11px}
+        td{padding:7px 10px;border-bottom:1px solid #e2e8f0;font-size:11px}
+        tr:nth-child(even)td{background:#f8fafc}
+        @media print{.noprint{display:none}}
+    </style></head><body>
+        <h1>Team of Rohit Shukla – SPF Performance Report</h1>
+        <p>Startek · Flipkart SPF · Lucknow &nbsp;|&nbsp; Total: ${currentFiltered.length} agents</p>
+        <table><thead><tr><th>#</th><th>SAP ID</th><th>Name</th><th>Team Leader</th><th>Attendance</th><th>Target Achieved</th><th>Grade</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+        <p style="margin-top:20px;color:#94a3b8">Printed from Startek SPF Dashboard · Confidential</p>
+        <script>window.onload=()=>{window.print()}<\/script>
+    </body></html>`);
+    win.document.close();
+    showToast('PDF print dialog opened');
+}
 
-            if(gradeValue !== 'all') {
-                filteredData = filteredData.filter(item => item.Grade === gradeValue);
-            }
+function copyTable() {
+    const tsv = currentFiltered.map(r =>
+        [r['Sap ID'], r['Full Name'], r.TL, r.Attendance, r['Achieved target'], r.Grade].join('\t')
+    ).join('\n');
+    navigator.clipboard.writeText(tsv).then(() => showToast('Table copied to clipboard'))
+        .catch(() => showToast('Copy failed – please try manually'));
+}
 
-            renderAgentTable(filteredData);
-        }
-
-        // Initialize setup on complete window load
-        window.onload = function() {
-            calculateTLPerformance();
-            renderAgentTable(rawDataset);
-        };
-    </script>
+/* ── INIT ── */
+window.onload = () => { applyFilters(); };
+</script>
 </body>
 </html>
